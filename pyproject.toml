@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dalipay"
+version = "0.1.0"
+description = "Official Python SDK for Dalipay Payment API"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Dalipay", email = "jacksonlinus95@gmail.com" }
+]
+keywords = ["payment", "mobile-money", "dalipay", "fintech", "africa"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "httpx>=0.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "respx>=0.20.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://dalipay.com"
+Repository = "https://github.com/Neurotech-HQ/dalipay-python-sdk"
+
+[tool.hatch.build.targets.wheel]
+packages = ["dalipay"]

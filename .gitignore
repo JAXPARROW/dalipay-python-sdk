@@ -1,0 +1,9 @@
+.venv
+sdk.md
+dist/
+__pycache__/
+*.pyc
+*.egg-info/
+.env
+.env.*
+!.env.example
