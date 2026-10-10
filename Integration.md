@@ -457,11 +457,10 @@ looks up the first 3 digits of the normalized number in this table:
 
 | Prefix | Provider |
 |---|---|
-| `074`, `075`, `076`, `079` | `Mpesa` |
-| `078`, `068`, `069` | `Airtel` |
-| `071`, `065`, `067` | `Tigo` |
-| `062`, `061` | `Halopesa` |
-| `077` | `Azampesa` |
+| `072`, `074`, `075`, `076`, `079` | `Mpesa` |
+| `066`, `068`, `069`, `078` | `Airtel` |
+| `065`, `067`, `070`, `071`, `077` | `Tigo` (Mixx by Yas) |
+| `061`, `062`, `063` | `Halopesa` |
 | `073` (TTCL) | **not mapped** — returns `None` |
 
 **073/TTCL has no mobile money provider on this API.** The Dalipay API

@@ -7,7 +7,7 @@ it, and consider surfacing the guess to the end user for confirmation
 (e.g. "We detected Vodacom M-Pesa for this number - is that right?")
 rather than submitting it blind on a real charge.
 
-073 (TTCL) is deliberately left unmapped: the Dalipay API only accepts
+073 (TTCL T-Pesa) is deliberately left unmapped: the Dalipay API only accepts
 Tigo, Airtel, Halopesa, Azampesa, or Mpesa as `provider`, so there is no
 valid guess to return for it - callers must pass `provider` explicitly for
 073 numbers.
@@ -19,20 +19,34 @@ from typing import Optional
 from .types import Provider
 
 # First 3 digits after normalizing to 0XXXXXXXXX -> provider.
+#
+# 063, 066, 070 and 072 were missing until 0.1.1, so create_collection()
+# raised ValueError for every such customer before anything was sent, and
+# 077 (Zantel, now Yas) was wrongly sent as Azampesa. The networks below were
+# checked against ~10k real payer-network lookups, Oct 2026:
+#   063 HaloPesa, 066 Airtel Money, 070/077 Mixx by Yas (Tigo), 072 M-Pesa.
 _PREFIX_TO_PROVIDER: dict[str, Provider] = {
+    # Vodacom M-Pesa
+    "072": "Mpesa",
     "074": "Mpesa",
     "075": "Mpesa",
     "076": "Mpesa",
     "079": "Mpesa",
-    "078": "Airtel",
+    # Airtel Money
+    "066": "Airtel",
     "068": "Airtel",
     "069": "Airtel",
-    "071": "Tigo",
+    "078": "Airtel",
+    # Mixx by Yas (formerly Tigo Pesa)
     "065": "Tigo",
     "067": "Tigo",
-    "062": "Halopesa",
+    "070": "Tigo",
+    "071": "Tigo",
+    "077": "Tigo",
+    # Halotel HaloPesa
     "061": "Halopesa",
-    "077": "Azampesa",
+    "062": "Halopesa",
+    "063": "Halopesa",
 }
 
 

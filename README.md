@@ -111,6 +111,7 @@ from dalipay import guess_provider
 
 guess_provider("0755660639")  # "Mpesa"
 guess_provider("0710000000")  # "Tigo"
+guess_provider("0700000000")  # "Tigo"  (070 = Mixx by Yas, added in 0.1.1)
 guess_provider("0730000000")  # None - 073/TTCL has no mobile money provider on this API
 ```
 
