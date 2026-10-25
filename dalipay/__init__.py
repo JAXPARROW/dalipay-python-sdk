@@ -37,7 +37,7 @@ from .types import CollectionStatus, Currency, DisbursementStatus, Provider, Web
 from .utils import guess_provider, normalize_msisdn
 from .webhooks import WebhookHandler, verify_webhook
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __all__ = [
     # Clients
     "Dalipay",

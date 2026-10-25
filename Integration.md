@@ -330,7 +330,11 @@ and is the recommended primary signal; keep polling as a backstop.
 ```
 
 A failed collection sends `"event": "collection.failed"` with
-`"data.status": "failed"`, same shape otherwise.
+`"data.status": "failed"`. Deliveries may also carry `"selcom_reference"`,
+and some failed ones carry `"failure_reason"`. **Not every failed delivery
+includes `failure_reason`** - when it's missing, call
+`get_collection_status(data.uuid)`; the status API always returns it for a
+failed collection.
 
 | Event | Meaning |
 |---|---|
@@ -604,6 +608,9 @@ Returned by `create_collection`, `get_collection_status`,
 | `external_id` | `str` | Your reference. |
 | `created_at` | `str \| None` | ISO 8601, present on status checks. |
 | `updated_at` | `str \| None` | ISO 8601, present on status checks. |
+| `failure_reason` | `str \| None` | Why it failed, in the network's own words (e.g. `"Failed-Insuffient Balance"`). Status checks only; `None` unless `status == "failed"`. |
+| `selcom_reference` | `str \| None` | Upstream aggregator reference, if any. |
+| `raw` | `dict` | Full `data` dict as received. |
 
 ### `Disbursement`
 
@@ -622,6 +629,7 @@ Returned by `create_disbursement`, `get_disbursement_status`.
 | `currency` | `str \| None` | If returned by the API. |
 | `created_at` | `str \| None` | ISO 8601, if returned. |
 | `updated_at` | `str \| None` | ISO 8601, if returned. |
+| `raw` | `dict` | Full `data` dict as received. |
 
 ### `WebhookPayload`
 
@@ -644,6 +652,9 @@ The nested `data` object inside a `WebhookPayload`.
 | `amount` | `float` |
 | `currency` | `str` |
 | `external_id` | `str` |
+| `failure_reason` | `str \| None` — only on some `collection.failed` deliveries |
+| `selcom_reference` | `str \| None` |
+| `raw` | `dict` |
 
 ### Type aliases (`dalipay.types`)
 
@@ -731,11 +742,16 @@ Response — `200 OK`:
     "currency": "TZS",
     "provider": "Tigo",
     "external_id": "INV-00123",
+    "failure_reason": null,
+    "selcom_reference": null,
     "created_at": "2026-06-13T22:31:35Z",
     "updated_at": "2026-06-13T22:31:42Z"
   }
 }
 ```
+
+A failed collection has `"status": "failed"` and `failure_reason` set, e.g.
+`"Failed-Insuffient Balance"` (the gateway's spelling).
 
 ### `POST {base_url}/disbursements`
 

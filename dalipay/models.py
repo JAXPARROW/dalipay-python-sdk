@@ -1,6 +1,6 @@
 """Data models for Dalipay SDK."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 from .types import (
@@ -26,6 +26,12 @@ class Collection:
         external_id: Your own reference for this payment
         created_at: Creation timestamp (ISO 8601), present on status checks
         updated_at: Last update timestamp (ISO 8601), present on status checks
+        failure_reason: Why a failed collection failed, as the network/aggregator
+            worded it (e.g. "Failed-Insuffient Balance"), present on status checks.
+            None while processing and on success.
+        selcom_reference: Upstream aggregator reference, if the gateway has one
+        raw: The full `data` dict as received, so fields this SDK doesn't model
+            yet are never lost
 
     Example:
         >>> collection = client.create_collection(
@@ -45,6 +51,9 @@ class Collection:
     external_id: str
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
+    failure_reason: Optional[str] = None
+    selcom_reference: Optional[str] = None
+    raw: dict = field(default_factory=dict, repr=False, compare=False)
 
     @classmethod
     def from_dict(cls, data: dict) -> "Collection":
@@ -59,6 +68,9 @@ class Collection:
             external_id=data.get("external_id", ""),
             created_at=data.get("created_at"),
             updated_at=data.get("updated_at"),
+            failure_reason=data.get("failure_reason"),
+            selcom_reference=data.get("selcom_reference"),
+            raw=dict(data),
         )
 
 
@@ -78,6 +90,8 @@ class Disbursement:
         currency: Currency code, if returned by the API
         created_at: Creation timestamp (ISO 8601), if returned
         updated_at: Last update timestamp (ISO 8601), if returned
+        raw: The full `data` dict as received, so fields this SDK doesn't model
+            yet are never lost
 
     Example:
         >>> disbursement = client.create_disbursement(
@@ -99,6 +113,7 @@ class Disbursement:
     currency: Optional[Currency] = None
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
+    raw: dict = field(default_factory=dict, repr=False, compare=False)
 
     @classmethod
     def from_dict(cls, data: dict) -> "Disbursement":
@@ -115,6 +130,7 @@ class Disbursement:
             currency=data.get("currency"),
             created_at=data.get("created_at"),
             updated_at=data.get("updated_at"),
+            raw=dict(data),
         )
 
 
@@ -129,6 +145,11 @@ class CollectionWebhookData:
         amount: Amount collected
         currency: Currency code
         external_id: Your own reference for this payment
+        failure_reason: Why the collection failed. Only some `collection.failed`
+            deliveries include it - when it's None, call
+            `get_collection_status(uuid)`, which does carry it.
+        selcom_reference: Upstream aggregator reference, if present
+        raw: The full `data` dict as received
     """
     reference: str
     uuid: str
@@ -136,6 +157,9 @@ class CollectionWebhookData:
     amount: float
     currency: Currency
     external_id: str
+    failure_reason: Optional[str] = None
+    selcom_reference: Optional[str] = None
+    raw: dict = field(default_factory=dict, repr=False, compare=False)
 
     @classmethod
     def from_dict(cls, data: dict) -> "CollectionWebhookData":
@@ -147,6 +171,9 @@ class CollectionWebhookData:
             amount=data.get("amount", 0),
             currency=data.get("currency", "TZS"),
             external_id=data.get("external_id", ""),
+            failure_reason=data.get("failure_reason"),
+            selcom_reference=data.get("selcom_reference"),
+            raw=dict(data),
         )
 
 
